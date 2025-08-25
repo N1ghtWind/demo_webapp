@@ -69,6 +69,8 @@ class CategoryController extends Controller
             return $this->successResponse(['message' => 'Category deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse($e, 404);
+        } catch (Exception $e) {
+            return $this->errorResponse($e, 500);
         }
     }
 }

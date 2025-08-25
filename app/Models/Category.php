@@ -20,7 +20,7 @@ class Category extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime'
     ];
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'description'];
 
     public function getCreatedAtAttribute(?string $value): ?string
     {

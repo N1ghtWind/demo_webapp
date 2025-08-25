@@ -13,8 +13,11 @@ class UpdateCategoryRequest extends FormRequest
 
     public function rules(): array
     {
+        $categoryId = $this->route('category'); // Get the ID from route parameter
+        
         return [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255|unique:categories,name,' . $categoryId,
+            'description' => 'nullable|string|max:1000',
         ];
     }
 }
