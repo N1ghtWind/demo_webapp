@@ -55,7 +55,7 @@ class AuthController extends Controller
 
             throw new RuntimeException('Could not invalidate token', 500);
         } catch (JWTException $e) {
-            return $this->errorResponse($e);
+            return $this->errorResponse($e, 500);
         }
     }
 
@@ -63,6 +63,9 @@ class AuthController extends Controller
     {
         try {
             $user = auth()->user();
+            if (!$user) {
+                return $this->errorResponse(new RuntimeException('User not authenticated'), 401);
+            }
             $token = JWTAuth::fromUser($user);
             return $this->successResponse([
                 'token' => $token,

@@ -25,9 +25,7 @@ class AdminAuthController extends Controller
         try {
             $response = $this->authRepository->login($credentials, 1);
             return response()->json($response, 201);
-        } catch (NotFoundHttpException $e) {
-            return $this->errorResponse($e);
-        } catch (UnprocessableEntityHttpException $e) {
+        } catch (NotFoundHttpException|UnprocessableEntityHttpException $e) {
             return $this->errorResponse($e);
         }
     }

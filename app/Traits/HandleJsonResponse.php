@@ -12,10 +12,7 @@ trait HandleJsonResponse
 {
     protected function successResponse(mixed $data, int $status = 200): JsonResponse
     {
-        return response()->json([
-            'success' => true,
-            'data' => $data
-        ], $status);
+        return response()->json($data, $status);
     }
 
     protected function errorResponse(Exception $e, int $defaultStatus = 400): JsonResponse
