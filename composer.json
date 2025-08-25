@@ -14,7 +14,7 @@
         "league/glide-laravel": "^1.0",
         "nikic/php-parser": "^4.0",
         "pusher/pusher-php-server": "^7.2",
-        "tymon/jwt-auth": "^2.2.1"
+        "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
