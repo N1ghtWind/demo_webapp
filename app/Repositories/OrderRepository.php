@@ -63,7 +63,7 @@ class OrderRepository implements OrderRepositoryInterface
     public function assignUserToOrdersByEmail(int $userId, string $email): int
     {
         try {
-            return Order::where('email', $email)
+            return Order::where('email_address', $email)
                 ->update(['user_id' => $userId]);
         } catch (\Exception $e) {
             throw new Exception('Failed to assign user to order: ' . $e->getMessage());
