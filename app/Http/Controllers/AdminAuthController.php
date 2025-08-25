@@ -7,6 +7,7 @@ use App\Repositories\Interfaces\UserAuthenticationInterface;
 use App\Traits\HandleJsonResponse;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class AdminAuthController extends Controller
 {
@@ -22,9 +23,11 @@ class AdminAuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         try {
-            $arrayOfTokens = $this->authRepository->login($credentials, 1);
-            return $this->successResponse($arrayOfTokens, 201);
+            $response = $this->authRepository->login($credentials, 1);
+            return response()->json($response, 201);
         } catch (NotFoundHttpException $e) {
+            return $this->errorResponse($e);
+        } catch (UnprocessableEntityHttpException $e) {
             return $this->errorResponse($e);
         }
     }
