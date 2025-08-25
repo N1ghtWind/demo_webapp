@@ -1,66 +1,332 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+## Overview
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This application implements a complete, yet simple e-commerce solution with:
+- **Backend**: Laravel 10 with Repository Pattern and Service Layer architecture
+- **Frontend**: Vue 3 with Vuetify, Pinia for state management, and Vue Router
+- **Authentication**: JWT-based authentication with separate admin and user flows
+- **Image Management**: Configurable S3 or local storage with Glide image processing
+- **Database**: MySQL 8.2 with comprehensive seeding and factory support
+- **Development Environment**: Docker Compose with full development stack
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Core E-commerce Features
+-  **Product Management**: Complete CRUD operations with categories and image support
+-  **Order System**: Full order lifecycle management with order items
+-  **Image Processing**: Glide integration for dynamic image resizing and optimization
+-  **Category Management**: Hierarchical product categorization
+-  **User Management**: Customer registration, authentication, and profile management
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Authentication & Security
+-  **JWT Authentication**: Secure token-based authentication system
+-  **Admin Panel**: Separate admin authentication and management interface
+-  **Refresh Tokens**: Automatic token refresh mechanism
+-  **Role-based Access**: Admin and user role separation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Architecture Features
+-  **Repository Pattern**: Clean data access layer abstraction
+-  **Strategy Pattern**: Configurable image upload strategies (S3/Local)
+-  **Service Layer**: Business logic separation and organization
+-  **API First**: RESTful API design with frontend SPA support
 
-## Learning Laravel
+### Development & Quality
+-  **Code Quality Tools**: PHPStan, PHPCS, PHPMD integration
+-  **Testing Suite**: PHPUnit with Feature and Unit tests
+-  **Docker Environment**: Complete containerized development stack
+-  **Frontend Tooling**: Vite, ESLint, Prettier for modern frontend development
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Minimum Requirements
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### System Requirements
+- **PHP**: ^8.1
+- **Node.js**: 16.x or higher
+- **Composer**: 2.x
+- **Docker**: 20.x (for containerized development)
+- **Docker Compose**: 3.7+
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### PHP Extensions
+- BCMath PHP Extension
+- Ctype PHP Extension
+- cURL PHP Extension
+- DOM PHP Extension
+- Fileinfo PHP Extension
+- JSON PHP Extension
+- Mbstring PHP Extension
+- OpenSSL PHP Extension
+- PCRE PHP Extension
+- PDO PHP Extension
+- Tokenizer PHP Extension
+- XML PHP Extension
 
-## Laravel Sponsors
+## Installation & Setup
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 1. Clone Repository
+```bash
+git clone <repository-url>
+cd demo_webapp
+```
 
-### Premium Partners
+### 2. Environment Configuration
+```bash
+cp .env.example .env
+# Configure your environment variables in .env
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 3. Install Dependencies
+```bash
+# Install PHP dependencies
+composer install
+
+# Install Node.js dependencies
+npm install
+```
+
+### 4. Application Setup
+```bash
+# Generate application key
+php artisan key:generate
+
+# Generate JWT secret
+php artisan jwt:secret
+
+# Run database migrations
+php artisan migrate
+
+# Seed database (optional)
+php artisan db:seed
+```
+
+### 5. Build Frontend Assets
+```bash
+# Development build
+npm run dev
+
+# Production build
+npm run build
+
+# SPA mode build
+npm run build-spa
+```
+
+## Docker Services
+
+### Available Services
+
+The application includes a comprehensive Docker Compose setup with the following services:
+
+| Service | Description | Ports | Container Name |
+|---------|-------------|-------|----------------|
+| **nginx** | Main web server | `${NGINX_PORT}:80` | webapp_nginx |
+| **image-nginx** | Image processing server | `8090:80` | webapp_image_nginx |
+| **php** | PHP 8.2 FPM | - | webapp_php |
+| **mysql82** | MySQL 8.2 database | `33064:3306` | webapp_mysql82 |
+| **mysql_test** | Test database | `33065:3306` | webapp_mysql_test |
+| **phpmyadmin** | Database admin interface | `${PHPMYADMIN_PORT}:80` | webapp_phpmyadmin |
+| **node** | Node.js development server | `8085:8080` | webapp_node |
+| **mailhog** | Email testing service | `1025:1025`, `8025:8025` | webapp_mailhog |
+| **minio** | S3-compatible object storage | `9000:9000`, `9001:9001` | webapp-minio |
+
+### Docker Environment Setup
+
+#### 1. Configure Environment
+Ensure your `.env` file includes Docker-specific variables:
+```env
+# Docker Configuration
+NGINX_PORT=8080
+PHPMYADMIN_PORT=8081
+DB_HOST=mysql82
+DB_PORT=3306
+DB_DATABASE=your_database
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+DB_ROOT_PASSWORD=root_password
+
+# MinIO S3 Configuration
+AWS_ACCESS_KEY_ID=minio
+AWS_SECRET_ACCESS_KEY=minio123
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=webapp
+AWS_ENDPOINT=http://localhost:9000
+```
+
+#### 2. Start Docker Services
+```bash
+# Start all services
+docker-compose up -d
+
+# Start specific services
+docker-compose up -d nginx php mysql82
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+#### 3. Docker Development Commands
+```bash
+# Execute commands in PHP container
+docker-compose exec php php artisan migrate
+docker-compose exec php composer install
+docker-compose exec php php artisan test
+
+# Execute commands in Node container
+docker-compose exec node npm install
+docker-compose exec node npm run dev
+
+# Access MySQL
+docker-compose exec mysql82 mysql -u root -p
+```
+
+### Service Details
+
+#### **Web Servers**
+- **nginx**: Main application server serving Laravel backend and Vue frontend
+- **image-nginx**: Dedicated server for image processing and serving
+
+#### **Database**
+- **mysql82**: Primary MySQL 8.2 database with persistent volume
+- **mysql_test**: Isolated test database for running tests
+- **phpmyadmin**: Web-based MySQL administration interface
+
+#### **Development Tools**
+- **node**: Node.js container for frontend development and build processes
+- **mailhog**: SMTP testing server with web interface for email debugging
+
+#### **Storage**
+- **minio**: S3-compatible object storage for file uploads and image management
+
+## Development Commands
+
+### PHP/Laravel Commands
+```bash
+# Dependencies
+composer install                    # Install PHP dependencies
+
+# Testing
+./vendor/bin/phpunit                # Run PHPUnit tests
+php artisan test                    # Run Laravel tests
+
+# Code Quality
+composer lint                       # Run PHP CodeSniffer
+composer lint-fix                   # Fix coding standards
+composer analyse                    # Run PHPStan analysis
+composer phpmd                      # Run mess detector
+composer deptrac                    # Analyze dependencies
+composer phpmetrics                 # Generate code metrics
+
+# Application
+php artisan serve                   # Start development server
+php artisan migrate                 # Run database migrations
+php artisan db:seed                 # Seed database
+php artisan queue:work              # Start queue worker
+```
+
+### Frontend Commands
+```bash
+npm run dev                         # Start Vite development server
+npm run build                       # Production build
+npm run build-spa                   # SPA mode build
+npm run watch                       # Watch mode for assets
+npm run spa                         # SPA development server
+```
+
+## Testing
+
+### Running Tests
+```bash
+# All tests
+php artisan test
+
+# Specific test suite
+./vendor/bin/phpunit --testsuite=Feature
+./vendor/bin/phpunit --testsuite=Unit
+
+# Coverage report
+./vendor/bin/phpunit --coverage-html coverage
+```
+
+### Test Environment
+- **Database**: In-memory SQLite for fast execution
+- **Cache**: Array driver
+- **Queue**: Sync driver for immediate execution
+- **Mail**: Log driver for email testing
+
+## Production Deployment
+
+### Build Process
+```bash
+# Install production dependencies
+composer install --no-dev --optimize-autoloader
+
+# Build frontend assets
+npm run build
+
+# Optimize Laravel
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+### Environment Configuration
+Ensure production environment variables are properly configured:
+- Database connection
+- JWT secrets
+- S3 credentials (if using S3 storage)
+- Mail configuration
+- Queue driver configuration
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. **Code Standards**: Follow PSR-12 coding standards
+2. **Testing**: Ensure all tests pass before submitting PRs
+3. **Code Quality**: Run linting and static analysis tools
+4. **Documentation**: Update documentation for new features
 
-## Code of Conduct
+### Development Workflow
+```bash
+# Start development environment
+docker-compose up -d
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Install dependencies
+composer install && npm install
 
-## Security Vulnerabilities
+# Run migrations and seeders
+php artisan migrate --seed
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+# Start frontend development
+npm run dev
+
+# Run tests
+php artisan test
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### Permission Issues (Linux/macOS)
+```bash
+sudo chown -R $USER:$USER storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+```
+
+#### Database Connection Issues
+- Verify Docker MySQL service is running
+- Check `.env` database configuration
+- Ensure MySQL port is not in use by another service
+
+#### Frontend Build Issues
+```bash
+# Clear npm cache
+npm cache clean --force
+
+# Remove node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+```
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
