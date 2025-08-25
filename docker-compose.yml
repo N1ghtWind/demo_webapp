@@ -111,6 +111,7 @@ services:
         restart: always
         ports:
             - "8085:8080"
+            - "3000:3000"
         working_dir: /www/local
         networks:
             - app-network

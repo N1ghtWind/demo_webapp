@@ -9,10 +9,12 @@ use Faker\Factory as Faker;
 
 class ImageSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $faker = Faker::create();
-        $images = $faker->image('public/images', 640, 480, null, false);
+
+        $images = ['product1.jpg', 'product2.jpg'];
+        $images[] = $faker->image('public/images', 640, 480, null, false);
 
         foreach ($images as $image) {
             DB::table('images')->insert([
