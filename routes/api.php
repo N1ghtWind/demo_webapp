@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminAuthController;
@@ -20,6 +21,8 @@ Route::middleware(['verify.refresh.token'])->get('/auth/refresh-token', [AuthCon
 
 Route::get('/product', [ProductController::class, 'index']);
 Route::get('/product/{id}', [ProductController::class, 'show']);
+
+Route::apiResource('category', CategoryController::class);
 
 // Admin routes
 require_once __DIR__.'/admin.php';
