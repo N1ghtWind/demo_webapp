@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use RuntimeException;
 use Exception;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -30,9 +31,9 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         try {
-            $arrayOfTokens = $this->authRepository->login($credentials);
-            return $this->successResponse($arrayOfTokens);
-        } catch (NotFoundHttpException $e) {
+            $response = $this->authRepository->login($credentials);
+            return $this->successResponse($response);
+        } catch (NotFoundHttpException|UnprocessableEntityHttpException $e) {
             return $this->errorResponse($e);
         }
     }

@@ -6,6 +6,7 @@ use App\Repositories\Interfaces\UserAuthenticationInterface;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 class AuthRepository implements UserAuthenticationInterface
 {
@@ -13,7 +14,7 @@ class AuthRepository implements UserAuthenticationInterface
     {
 
         if (! $token = JWTAuth::attempt($data)) {
-            throw new NotFoundHttpException('Invalid credentials');
+            throw new UnprocessableEntityHttpException('Invalid credentials');
         }
 
         $user = auth()->user();
@@ -23,7 +24,7 @@ class AuthRepository implements UserAuthenticationInterface
         }
 
         if (!empty($isAdmin) && $user->is_admin !== $isAdmin) {
-            throw new NotFoundHttpException('Unauthorized: User not found');
+            throw new UnprocessableEntityHttpException('Invalid credentials');
         }
 
         $tokenExpire = JWTAuth::factory()->getTTL();
@@ -35,6 +36,7 @@ class AuthRepository implements UserAuthenticationInterface
         JWTAuth::factory()->setTTL($tokenExpire);
 
         return [
+            'user' => $user,
             'token' => $token,
             'token_expire' => $tokenExpire,
             'refresh_token' => $refreshToken
@@ -46,7 +48,7 @@ class AuthRepository implements UserAuthenticationInterface
         try {
             JWTAuth::setToken($token)->invalidate();
             return true;
-        } catch (JWTException $e) {
+        } catch (JWTException) {
             return false;
         }
     }
