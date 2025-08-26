@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Product;
 
+use Illuminate\Pagination\LengthAwarePaginator;
 use Tests\TestCase;
 use App\Models\User;
 use App\Models\Product;
@@ -27,7 +28,7 @@ class AdminProductControllerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         Storage::fake('local');
 
         $this->adminUser = User::factory()->create([
@@ -50,7 +51,7 @@ class AdminProductControllerTest extends TestCase
     protected function actingAsAdmin(): self
     {
         $token = JWTAuth::fromUser($this->adminUser);
-        
+
         return $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
         ]);
@@ -250,7 +251,7 @@ class AdminProductControllerTest extends TestCase
 
         // Act
         $response = $this->actingAsAdmin()
-            ->putJson("/api/admin/product/{$nonExistentId}", $updateData);
+            ->putJson("/api/admin/product/$nonExistentId", $updateData);
 
         // Assert
         $response->assertNotFound();
@@ -272,8 +273,8 @@ class AdminProductControllerTest extends TestCase
                 ],
             ]);
 
-        // Verify product was deleted from database
-        $this->assertDatabaseMissing('products', [
+        // Verify product was soft deleted from database
+        $this->assertSoftDeleted('products', [
             'id' => $this->product->id,
         ]);
     }
@@ -286,7 +287,7 @@ class AdminProductControllerTest extends TestCase
 
         // Act
         $response = $this->actingAsAdmin()
-            ->deleteJson("/api/admin/product/{$nonExistentId}");
+            ->deleteJson("/api/admin/product/$nonExistentId");
 
         // Assert
         $response->assertNotFound();
@@ -300,7 +301,7 @@ class AdminProductControllerTest extends TestCase
         $product2 = Product::factory()->create(['category_id' => $this->category->id]);
         $product3 = Product::factory()->create(['category_id' => $this->category->id]);
 
-        $idsToDelete = "{$product1->id},{$product2->id},{$product3->id}";
+        $idsToDelete = "$product1->id,$product2->id,$product3->id";
 
         // Act
         $response = $this->actingAsAdmin()
@@ -317,18 +318,18 @@ class AdminProductControllerTest extends TestCase
                 ],
             ]);
 
-        // Verify products were deleted from database
-        $this->assertDatabaseMissing('products', ['id' => $product1->id]);
-        $this->assertDatabaseMissing('products', ['id' => $product2->id]);
-        $this->assertDatabaseMissing('products', ['id' => $product3->id]);
+        // Verify products were soft deleted from database
+        $this->assertSoftDeleted('products', ['id' => $product1->id]);
+        $this->assertSoftDeleted('products', ['id' => $product2->id]);
+        $this->assertSoftDeleted('products', ['id' => $product3->id]);
     }
 
     /** @test */
     public function it_uploads_images_to_product_successfully(): void
     {
         // Arrange
-        $image1 = UploadedFile::fake()->image('product1.jpg');
-        $image2 = UploadedFile::fake()->image('product2.jpg');
+        $image1 = UploadedFile::fake()->image('product1.jpg', 10, 10);
+        $image2 = UploadedFile::fake()->image('product2.jpg', 10, 10);
 
         // Act
         $response = $this->actingAsAdmin()
@@ -535,7 +536,7 @@ class AdminProductControllerTest extends TestCase
         $mockService->shouldReceive('index')
             ->once()
             ->with([], true) // isAdmin should be true for AdminProductController
-            ->andReturn(new \Illuminate\Pagination\LengthAwarePaginator(
+            ->andReturn(new LengthAwarePaginator(
                 collect([$this->product]),
                 1,
                 15,

@@ -8,6 +8,7 @@ use App\Services\UserService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Exception;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 
 class UserControllerTest extends TestCase
 {
@@ -110,7 +111,7 @@ class UserControllerTest extends TestCase
     public function it_calls_user_service_for_index(): void
     {
         // Arrange
-        $mockUsers = collect([$this->user, $this->adminUser]);
+        $mockUsers = EloquentCollection::make([$this->user, $this->adminUser]);
         
         $mockService = $this->mock(UserService::class);
         $mockService->shouldReceive('index')
@@ -197,18 +198,12 @@ class UserControllerTest extends TestCase
     /** @test */
     public function it_handles_exceptions_when_getting_authenticated_user(): void
     {
-        // Arrange - Mock auth()->user() to throw exception
-        $this->actingAsUser();
-        
-        // Create a scenario where auth()->user() could fail
-        // This is more of an edge case but good to test
-        
-        // Act
-        $response = $this->getJson('/api/user/get-authenticated-user');
+        // Arrange & Act
+        $response = $this->actingAsUser()
+            ->getJson('/api/user/get-authenticated-user');
 
         // Assert - In normal circumstances this should work
-        // But we're testing the exception handling path
-        $response->assertOk(); // If no exception, should be OK
+        $response->assertOk();
     }
 
     /** @test */
@@ -379,15 +374,15 @@ class UserControllerTest extends TestCase
         $mockService = $this->mock(UserService::class);
         $mockService->shouldReceive('index')
             ->once()
-            ->andReturn(collect([$this->user]));
+            ->andReturn(EloquentCollection::make([$this->user]));
 
         $response1 = $this->getJson('/api/user');
         $response1->assertOk();
 
-        // Test with array
+        // Test with Eloquent Collection
         $mockService->shouldReceive('index')
             ->once()
-            ->andReturn([$this->user]);
+            ->andReturn(EloquentCollection::make([$this->user]));
 
         $response2 = $this->getJson('/api/user');
         $response2->assertOk();

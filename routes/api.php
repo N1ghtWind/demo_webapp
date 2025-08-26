@@ -21,7 +21,7 @@ Route::middleware('auth.api')->group(function () {
 Route::middleware(['verify.refresh.token'])->get('/auth/refresh-token', [AuthController::class, 'refreshToken']);
 
 Route::get('/product', [ProductController::class, 'index']);
-Route::get('/product/{id}', [ProductController::class, 'show']);
+Route::get('/product/{id}', [ProductController::class, 'show'])->whereNumber('id');
 
 Route::apiResource('category', CategoryController::class);
 
@@ -31,6 +31,10 @@ Route::prefix('/order/{order}')->group(function () {
         Route::post('/order-item', [OrderItemController::class, 'store']);
         Route::put('/order-item/{id}', [OrderItemController::class, 'update']);
         Route::delete('/order-item/{id}', [OrderItemController::class, 'destroy']);
+});
+
+Route::middleware('auth.api')->group(function () {
+    Route::get('/user/get-authenticated-user', [UserController::class, 'getAuthenticatedUser']);
 });
 
 Route::apiResource('user', UserController::class);
