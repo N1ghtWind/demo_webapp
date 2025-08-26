@@ -39,7 +39,7 @@ class CategoryRepository implements CategoryRepositoryInterface
         try {
             $item = Category::findOrFail($id);
             $item->update($data);
-            return $item->fresh(); // Return fresh instance to get updated data
+            return $item->refresh(); // Return refreshed instance to get updated data
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException('Category not found: ' . $e->getMessage());
         } catch (Exception $e) {

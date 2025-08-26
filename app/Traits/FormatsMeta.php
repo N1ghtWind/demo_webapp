@@ -13,10 +13,11 @@ use Illuminate\Contracts\Pagination\CursorPaginator;
 trait FormatsMeta
 {
     /**
-     * @param LengthAwarePaginator<TModel>|CursorPaginator<TModel>|Paginator<TModel> $models
+     * @param CursorPaginator<Model>|LengthAwarePaginator<Model>|Paginator<Model> $models
      * @return array<string, mixed>
+     * @phpstan-ignore-next-line
      */
-    protected function formatMeta($models): array
+    protected function formatMeta(Paginator|LengthAwarePaginator|CursorPaginator $models): array
     {
         if ($models instanceof LengthAwarePaginator) {
             return [

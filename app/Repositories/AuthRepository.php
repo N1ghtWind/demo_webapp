@@ -23,7 +23,7 @@ class AuthRepository implements UserAuthenticationInterface
             throw new NotFoundHttpException('Unauthorized: User not found');
         }
 
-        if (!empty($isAdmin) && $user->is_admin !== $isAdmin) {
+        if (!empty($isAdmin) && !$user->is_admin) {
             throw new UnprocessableEntityHttpException('Invalid credentials');
         }
 
@@ -31,7 +31,7 @@ class AuthRepository implements UserAuthenticationInterface
         $refreshTokenExpire = $tokenExpire * 113000;
 
         JWTAuth::factory()->setTTL($refreshTokenExpire);
-        $refreshToken = JWTAuth::claims(['is_refresh_token' => true])->fromUser(auth()->user());
+        $refreshToken = JWTAuth::claims(['is_refresh_token' => true])->fromUser($user);
 
         JWTAuth::factory()->setTTL($tokenExpire);
 

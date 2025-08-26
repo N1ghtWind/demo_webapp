@@ -39,7 +39,7 @@ class OrderItemRepository implements OrderItemRepositoryInterface
         try {
             $item = OrderItem::where('order_id', $orderId)->findOrFail($id);
             $item->update($data);
-            return $item->fresh(); // Return fresh instance to get updated data
+            return $item->refresh(); // Return refreshed instance to get updated data
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException('OrderItem not found: ' . $e->getMessage());
         } catch (Exception $e) {

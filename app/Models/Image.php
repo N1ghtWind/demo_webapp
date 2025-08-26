@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * @property \Illuminate\Database\Eloquent\Relations\Pivot $pivot
+ * @property \Illuminate\Database\Eloquent\Relations\Pivot|null $pivot
  */
 class Image extends Model
 {

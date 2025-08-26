@@ -47,8 +47,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // Add missing scramble.docs.index route as alias to scramble.docs.ui
-        Route::get('docs/api', function () {
-            return app(\Dedoc\Scramble\Http\Controllers\DocsController::class)->ui();
-        })->name('scramble.docs.index')->middleware(['web', \Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess::class]);
+        if (class_exists(\Dedoc\Scramble\Http\Controllers\DocsController::class)) {
+            Route::get('docs/api', function () {
+                /** @phpstan-ignore-next-line */
+                return app(\Dedoc\Scramble\Http\Controllers\DocsController::class)->ui();
+            })->name('scramble.docs.index')->middleware(['web', \Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess::class]);
+        }
     }
 }

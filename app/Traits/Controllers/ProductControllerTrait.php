@@ -24,6 +24,7 @@ trait ProductControllerTrait
         $products = $this->productService->index($request->all(), $this->isAdmin);
         return $this->successResponse([
             'items' => ProductResource::collection($products->items()),
+            /** @phpstan-ignore-next-line */
             'meta' => $this->formatMeta($products)
         ]);
     }

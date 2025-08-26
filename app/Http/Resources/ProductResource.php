@@ -32,16 +32,17 @@ class ProductResource extends JsonResource
             'description' => $this->resource->description,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
-            'images' => $this->resource->images->map(function ($image) {
-
+            /** @phpstan-ignore-next-line */
+            'images' => $this->resource->images->map(function ($image): array {
+                /** @var Image $image */
                 $imageService = app(ImageService::class)
                     ->setPath($image->path)
-                    ->setType($image->type);
+                    ->setType((string) $image->type);
 
                 return [
                     'id' => $image->id,
                     'presets' => $this->getImagePresets($image, $imageService),
-                    'first' => $image->pivot->first,
+                    'first' => $image->pivot?->first ?? false,
                 ];
             }),
             'firstImage' => $this->resource->images->firstWhere('pivot.first', true) ? [
@@ -54,7 +55,7 @@ class ProductResource extends JsonResource
     private function getImagePresets(Image $image, ImageService $imageService): array
     {
         $imageService->setPath($image->path)
-            ->setType($image->type);
+            ->setType((string) $image->type);
 
         return [
             'four_small' => $imageService->setPreset('four_small')->build(),

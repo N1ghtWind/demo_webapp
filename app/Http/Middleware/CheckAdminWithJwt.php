@@ -30,6 +30,7 @@ class CheckAdminWithJwt
                 return response()->json(['status' => 'There is no user with this auth token.'], 404);
             }
 
+            /** @var \App\Models\User $user */
             if (!$user->is_admin) {
                 return response()->json(['status' => 'Access Denied. You are not an admin.'], 403);
             }
