@@ -32,13 +32,15 @@ class ProductImageService
             $imageIds = [];
 
             if ($files) {
+                $uploader = ImageUploaderFactory::createUploader();
+                $imageType = $this->getImageTypeFromConfig();
+                
                 foreach ($files as $file) {
-                    $uploader = ImageUploaderFactory::createUploader();
                     $path = $uploader->upload($file);
 
                     $image = Image::create([
                         'path' => $path,
-                        'type' => Image::TYPE_S3
+                        'type' => $imageType
                     ]);
 
                     $imageIds[] = $image->id;
@@ -94,5 +96,16 @@ class ProductImageService
         } catch (Exception $e) {
             throw $e;
         }
+    }
+
+    private function getImageTypeFromConfig(): int
+    {
+        $uploadType = config('app.image_upload_to');
+        
+        return match ($uploadType) {
+            's3' => Image::TYPE_S3,
+            'local' => Image::TYPE_STORAGE,
+            default => Image::TYPE_STORAGE,
+        };
     }
 }

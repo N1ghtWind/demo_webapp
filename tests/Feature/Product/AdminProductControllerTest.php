@@ -29,6 +29,8 @@ class AdminProductControllerTest extends TestCase
     {
         parent::setUp();
 
+        // Force local storage for tests to avoid S3 timeouts
+        config(['app.image_upload_to' => 'local']);
         Storage::fake('local');
 
         $this->adminUser = User::factory()->create([
