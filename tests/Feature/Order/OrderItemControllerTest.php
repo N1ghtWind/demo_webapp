@@ -50,7 +50,7 @@ class OrderItemControllerTest extends TestCase
             'order_id' => $this->order->id,
             'product_id' => $this->product->id,
             'quantity' => 2,
-            'price' => 999.99,
+            'price' => 1000,
         ]);
     }
 
@@ -126,7 +126,7 @@ class OrderItemControllerTest extends TestCase
                     'order_id' => $this->order->id,
                     'product_id' => $this->product->id,
                     'quantity' => 2,
-                    'price' => 999.99,
+                    'price' => 1000,
                 ],
             ]);
     }
@@ -164,7 +164,7 @@ class OrderItemControllerTest extends TestCase
         $orderItemData = [
             'product_id' => $this->product->id,
             'quantity' => 3,
-            'price' => 1299.99,
+            'price' => 1300,
         ];
 
         // Act
@@ -190,7 +190,7 @@ class OrderItemControllerTest extends TestCase
                     'order_id' => $this->order->id,
                     'product_id' => $this->product->id,
                     'quantity' => 3,
-                    'price' => 1299.99,
+                    'price' => 1300,
                 ],
             ]);
 
@@ -199,7 +199,7 @@ class OrderItemControllerTest extends TestCase
             'order_id' => $this->order->id,
             'product_id' => $this->product->id,
             'quantity' => 3,
-            'price' => 1299.99,
+            'price' => 1300,
         ]);
     }
 
@@ -209,7 +209,7 @@ class OrderItemControllerTest extends TestCase
         // Arrange
         $orderItemData = [
             'quantity' => 3,
-            'price' => 1299.99,
+            'price' => 1300,
         ];
 
         // Act
@@ -226,7 +226,7 @@ class OrderItemControllerTest extends TestCase
         // Arrange
         $orderItemData = [
             'product_id' => $this->product->id,
-            'price' => 1299.99,
+            'price' => 1300,
         ];
 
         // Act
@@ -261,7 +261,7 @@ class OrderItemControllerTest extends TestCase
         $orderItemData = [
             'product_id' => $this->product->id,
             'quantity' => 0, // Invalid quantity
-            'price' => 1299.99,
+            'price' => 1300,
         ];
 
         // Act
@@ -297,7 +297,7 @@ class OrderItemControllerTest extends TestCase
         $updateData = [
             'product_id' => $this->product->id,
             'quantity' => 5,
-            'price' => 1599.99,
+            'price' => 1600,
         ];
 
         // Act
@@ -312,7 +312,7 @@ class OrderItemControllerTest extends TestCase
                     'order_id' => $this->order->id,
                     'product_id' => $this->product->id,
                     'quantity' => 5,
-                    'price' => 1599.99,
+                    'price' => 1600,
                 ],
             ]);
 
@@ -320,7 +320,7 @@ class OrderItemControllerTest extends TestCase
         $this->assertDatabaseHas('order_items', [
             'id' => $this->orderItem->id,
             'quantity' => 5,
-            'price' => 1599.99,
+            'price' => 1600,
         ]);
     }
 
@@ -332,7 +332,7 @@ class OrderItemControllerTest extends TestCase
         $updateData = [
             'product_id' => $this->product->id,
             'quantity' => 5,
-            'price' => 1599.99,
+            'price' => 1600,
         ];
 
         // Act
@@ -412,7 +412,7 @@ class OrderItemControllerTest extends TestCase
         $updateData = [
             'product_id' => $this->product->id,
             'quantity' => 5,
-            'price' => 1599.99,
+            'price' => 1600,
         ];
 
         // Act
