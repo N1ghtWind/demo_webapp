@@ -8,7 +8,25 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Services\ImageService;
 
 /**
- * @property \Illuminate\Database\Eloquent\Relations\Pivot|null $pivot
+ * @property int $id
+ * @property string $path
+ * @property int|null $type
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read array<string, string> $presets
+ * @property-read string $type_name
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
+ * @property-read int|null $products_count
+ * @method static \Database\Factories\ImageFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|Image newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Image newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Image query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Image whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Image whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Image wherePath($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Image whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Image whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Image extends Model
 {
