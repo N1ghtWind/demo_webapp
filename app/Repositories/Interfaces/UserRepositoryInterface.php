@@ -9,4 +9,6 @@ interface UserRepositoryInterface
 {
     /** @return EloquentCollection<int, User> */
     public function index(): EloquentCollection;
+    
+    public function show(int $id): User;
 }

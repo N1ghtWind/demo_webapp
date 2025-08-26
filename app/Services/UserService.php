@@ -25,4 +25,13 @@ class UserService
             throw $e;
         }
     }
+
+    public function show(int $id): User
+    {
+        try {
+            return $this->userRepository->show($id);
+        } catch (Exception $e) {
+            throw $e;
+        }
+    }
 }

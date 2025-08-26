@@ -23,13 +23,9 @@ class ProductRepository implements ProductRepositoryInterface
             });
         }
 
-        if (!$isAdmin) {
-            return $query->cursorPaginate(10);
-        } else {
-            $perPage = $data['itemsPerPage'] ?? 10;
-            $page = $data['page'] ?? 1;
-            return $query->paginate($perPage, ['*'], 'page', $page);
-        }
+        $perPage = $data['per_page'] ?? $data['itemsPerPage'] ?? 10;
+        $page = $data['page'] ?? 1;
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function show(int $id): Product

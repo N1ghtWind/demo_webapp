@@ -27,6 +27,16 @@ class UserController extends Controller
         }
     }
 
+    public function show($id): JsonResponse
+    {
+        try {
+            $user = $this->userService->show((int) $id);
+            return $this->successResponse($user);
+        } catch (\Exception $e) {
+            return $this->errorResponse($e, 404);
+        }
+    }
+
     public function getAuthenticatedUser(): JsonResponse
     {
         try {
