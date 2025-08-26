@@ -5,9 +5,13 @@ namespace Tests\Unit\Services;
 use Tests\TestCase;
 use App\Services\UserRegistrationService;
 use App\Repositories\Interfaces\UserRegistrationInterface;
+use App\Repositories\Interfaces\OrderRepositoryInterface;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Mail;
 use Mockery;
 use Exception;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class UserRegistrationServiceTest extends TestCase
 {
@@ -15,13 +19,15 @@ class UserRegistrationServiceTest extends TestCase
 
     protected UserRegistrationService $userRegistrationService;
     protected UserRegistrationInterface $mockRepository;
+    protected OrderRepositoryInterface $mockOrderRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
         
         $this->mockRepository = Mockery::mock(UserRegistrationInterface::class);
-        $this->userRegistrationService = new UserRegistrationService($this->mockRepository);
+        $this->mockOrderRepository = Mockery::mock(OrderRepositoryInterface::class);
+        $this->userRegistrationService = new UserRegistrationService($this->mockRepository, $this->mockOrderRepository);
     }
 
     protected function tearDown(): void
@@ -34,6 +40,8 @@ class UserRegistrationServiceTest extends TestCase
     public function it_registers_user_successfully_with_valid_data(): void
     {
         // Arrange
+        Mail::fake();
+        
         $userData = [
             'name' => 'John Doe',
             'email' => 'john@example.com',
@@ -41,23 +49,38 @@ class UserRegistrationServiceTest extends TestCase
             'password_confirmation' => 'password123',
         ];
 
+        $mockUser = User::factory()->make([
+            'id' => 1,
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+        ]);
+
         $this->mockRepository
             ->shouldReceive('registration')
             ->once()
             ->with($userData)
-            ->andReturn(true);
+            ->andReturn($mockUser);
+
+        $this->mockOrderRepository
+            ->shouldReceive('assignUserToOrdersByEmail')
+            ->once()
+            ->with($mockUser->id, $mockUser->email);
 
         // Act
         $result = $this->userRegistrationService->registration($userData);
 
         // Assert
-        $this->assertTrue($result);
+        $this->assertInstanceOf(User::class, $result);
+        $this->assertEquals('John Doe', $result->name);
+        $this->assertEquals('john@example.com', $result->email);
     }
 
     /** @test */
     public function it_throws_exception_when_registration_fails(): void
     {
         // Arrange
+        Mail::fake();
+        
         $userData = [
             'name' => 'John Doe',
             'email' => 'john@example.com',
@@ -120,6 +143,8 @@ class UserRegistrationServiceTest extends TestCase
     public function it_passes_correct_data_to_repository_for_registration(): void
     {
         // Arrange
+        Mail::fake();
+        
         $userData = [
             'name' => 'Jane Smith',
             'email' => 'jane@example.com',
@@ -127,17 +152,30 @@ class UserRegistrationServiceTest extends TestCase
             'password_confirmation' => 'securepassword',
         ];
 
+        $mockUser = User::factory()->make([
+            'id' => 2,
+            'name' => 'Jane Smith',
+            'email' => 'jane@example.com',
+        ]);
+
         $this->mockRepository
             ->shouldReceive('registration')
             ->once()
             ->with($userData)
-            ->andReturn(true);
+            ->andReturn($mockUser);
+
+        $this->mockOrderRepository
+            ->shouldReceive('assignUserToOrdersByEmail')
+            ->once()
+            ->with($mockUser->id, $mockUser->email);
 
         // Act
         $result = $this->userRegistrationService->registration($userData);
 
         // Assert
-        $this->assertTrue($result);
+        $this->assertInstanceOf(User::class, $result);
+        $this->assertEquals('Jane Smith', $result->name);
+        $this->assertEquals('jane@example.com', $result->email);
         // The assertion is implicit in the shouldReceive()->with() expectation
     }
 
@@ -162,9 +200,11 @@ class UserRegistrationServiceTest extends TestCase
     }
 
     /** @test */
-    public function it_handles_repository_returning_false_for_registration(): void
+    public function it_handles_repository_exception_for_registration(): void
     {
         // Arrange
+        Mail::fake();
+        
         $userData = [
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -175,13 +215,13 @@ class UserRegistrationServiceTest extends TestCase
             ->shouldReceive('registration')
             ->once()
             ->with($userData)
-            ->andReturn(false);
+            ->andThrow(new Exception('Registration failed'));
 
-        // Act
-        $result = $this->userRegistrationService->registration($userData);
-
-        // Assert
-        $this->assertFalse($result);
+        // Act & Assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Registration failed');
+        
+        $this->userRegistrationService->registration($userData);
     }
 
     /** @test */
@@ -196,17 +236,19 @@ class UserRegistrationServiceTest extends TestCase
             ->with($activationToken)
             ->andReturn(false);
 
-        // Act
-        $result = $this->userRegistrationService->activation($activationToken);
-
-        // Assert
-        $this->assertFalse($result);
+        // Act & Assert
+        $this->expectException(NotFoundHttpException::class);
+        $this->expectExceptionMessage('Invalid token');
+        
+        $this->userRegistrationService->activation($activationToken);
     }
 
     /** @test */
     public function it_handles_empty_user_data_for_registration(): void
     {
         // Arrange
+        Mail::fake();
+        
         $userData = [];
 
         $this->mockRepository
@@ -278,17 +320,32 @@ class UserRegistrationServiceTest extends TestCase
     public function it_handles_various_user_data_scenarios(array $userData, bool $expectedResult): void
     {
         // Arrange
+        Mail::fake();
+        
+        $mockUser = User::factory()->make([
+            'id' => 3,
+            'name' => $userData['name'],
+            'email' => $userData['email'],
+        ]);
+
         $this->mockRepository
             ->shouldReceive('registration')
             ->once()
             ->with($userData)
-            ->andReturn($expectedResult);
+            ->andReturn($mockUser);
+
+        $this->mockOrderRepository
+            ->shouldReceive('assignUserToOrdersByEmail')
+            ->once()
+            ->with($mockUser->id, $mockUser->email);
 
         // Act
         $result = $this->userRegistrationService->registration($userData);
 
         // Assert
-        $this->assertEquals($expectedResult, $result);
+        $this->assertInstanceOf(User::class, $result);
+        $this->assertEquals($userData['name'], $result->name);
+        $this->assertEquals($userData['email'], $result->email);
     }
 
     /**
@@ -342,10 +399,19 @@ class UserRegistrationServiceTest extends TestCase
         // This test ensures that the service maintains the expected method signatures
         
         // Arrange
+        Mail::fake();
+        
         $userData = ['name' => 'Test', 'email' => 'test@example.com'];
         $token = 'test_token';
 
-        $this->mockRepository->shouldReceive('registration')->once()->andReturn(true);
+        $mockUser = User::factory()->make([
+            'id' => 4,
+            'name' => 'Test',
+            'email' => 'test@example.com',
+        ]);
+
+        $this->mockRepository->shouldReceive('registration')->once()->andReturn($mockUser);
+        $this->mockOrderRepository->shouldReceive('assignUserToOrdersByEmail')->once();
         $this->mockRepository->shouldReceive('activation')->once()->andReturn(true);
 
         // Act & Assert - Methods should exist and be callable
@@ -356,7 +422,7 @@ class UserRegistrationServiceTest extends TestCase
         $registrationResult = $this->userRegistrationService->registration($userData);
         $activationResult = $this->userRegistrationService->activation($token);
         
-        $this->assertTrue($registrationResult);
+        $this->assertInstanceOf(User::class, $registrationResult);
         $this->assertTrue($activationResult);
     }
 }
