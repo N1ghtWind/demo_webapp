@@ -251,7 +251,7 @@ class ProductServiceTest extends TestCase
         $this->mockRepository
             ->shouldReceive('update')
             ->once()
-            ->with($updateData, $productId)
+            ->with($productId, $updateData)
             ->andReturn($updatedProduct);
 
         // Act
@@ -278,7 +278,7 @@ class ProductServiceTest extends TestCase
         $this->mockRepository
             ->shouldReceive('update')
             ->once()
-            ->with($updateData, $productId)
+            ->with($productId, $updateData)
             ->andThrow(new ModelNotFoundException('Product not found'));
 
         // Act & Assert

@@ -7,7 +7,7 @@ use App\Services\CategoryService;
 use App\Repositories\Interfaces\CategoryRepositoryInterface;
 use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Mockery;
 use Exception;
@@ -45,7 +45,7 @@ class CategoryServiceTest extends TestCase
     public function it_retrieves_all_categories(): void
     {
         // Arrange
-        $categories = collect([
+        $categories = EloquentCollection::make([
             $this->sampleCategory,
             Category::factory()->make(['id' => 2, 'name' => 'Books']),
             Category::factory()->make(['id' => 3, 'name' => 'Clothing']),
@@ -60,7 +60,7 @@ class CategoryServiceTest extends TestCase
         $result = $this->categoryService->index();
 
         // Assert
-        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(EloquentCollection::class, $result);
         $this->assertEquals(3, $result->count());
         $this->assertEquals('Electronics', $result->first()->name);
     }
@@ -72,13 +72,13 @@ class CategoryServiceTest extends TestCase
         $this->mockRepository
             ->shouldReceive('index')
             ->once()
-            ->andReturn(collect());
+            ->andReturn(EloquentCollection::make());
 
         // Act
         $result = $this->categoryService->index();
 
         // Assert
-        $this->assertInstanceOf(Collection::class, $result);
+        $this->assertInstanceOf(EloquentCollection::class, $result);
         $this->assertEquals(0, $result->count());
         $this->assertTrue($result->isEmpty());
     }
@@ -224,7 +224,7 @@ class CategoryServiceTest extends TestCase
         $this->mockRepository
             ->shouldReceive('update')
             ->once()
-            ->with($updateData, $categoryId)
+            ->with($categoryId, $updateData)
             ->andReturn($updatedCategory);
 
         // Act
@@ -254,7 +254,7 @@ class CategoryServiceTest extends TestCase
         $this->mockRepository
             ->shouldReceive('update')
             ->once()
-            ->with($updateData, $categoryId)
+            ->with($categoryId, $updateData)
             ->andReturn($updatedCategory);
 
         // Act
@@ -279,7 +279,7 @@ class CategoryServiceTest extends TestCase
         $this->mockRepository
             ->shouldReceive('update')
             ->once()
-            ->with($updateData, $categoryId)
+            ->with($categoryId, $updateData)
             ->andThrow(new ModelNotFoundException('Category not found'));
 
         // Act & Assert
@@ -456,11 +456,11 @@ class CategoryServiceTest extends TestCase
     public function it_returns_correct_data_types_from_methods(): void
     {
         // Test index method return type
-        $mockCollection = collect([$this->sampleCategory]);
+        $mockCollection = EloquentCollection::make([$this->sampleCategory]);
         $this->mockRepository->shouldReceive('index')->once()->andReturn($mockCollection);
         
         $indexResult = $this->categoryService->index();
-        $this->assertInstanceOf(Collection::class, $indexResult);
+        $this->assertInstanceOf(EloquentCollection::class, $indexResult);
 
         // Test show method return type
         $this->mockRepository->shouldReceive('show')->once()->andReturn($this->sampleCategory);
@@ -508,7 +508,7 @@ class CategoryServiceTest extends TestCase
         $this->mockRepository
             ->shouldReceive('update')
             ->once()
-            ->with($updateData, $categoryId)
+            ->with($categoryId, $updateData)
             ->andReturn($this->sampleCategory);
 
         // Act
