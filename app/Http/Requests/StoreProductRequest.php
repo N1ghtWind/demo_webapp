@@ -14,10 +14,10 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'string|required',
-            'description' => 'string',
-            'price' => 'numeric',
-            'category_id' => 'integer|required|exists:categories,id'
+            'name' => 'required|string|max:255',
+            'description' => 'required|string|max:1000',
+            'price' => 'required|numeric|min:0.01',
+            'category_id' => 'required|integer|exists:categories,id'
         ];
     }
 }

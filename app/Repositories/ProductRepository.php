@@ -57,7 +57,7 @@ class ProductRepository implements ProductRepositoryInterface
             $product->update($data);
             return $product;
         } catch (ModelNotFoundException $e) {
-            throw new Exception('Product not found: ' . $e->getMessage());
+            throw new ModelNotFoundException('Product not found: ' . $e->getMessage());
         } catch (Exception $e) {
             throw new Exception('Failed to update product: ' . $e->getMessage());
         }
@@ -69,7 +69,7 @@ class ProductRepository implements ProductRepositoryInterface
             $product = Product::findOrFail($id);
             return $product->delete();
         } catch (ModelNotFoundException $e) {
-            throw new Exception('Product not found: ' . $e->getMessage());
+            throw new ModelNotFoundException('Product not found: ' . $e->getMessage());
         } catch (Exception $e) {
             throw new Exception('Failed to delete product: ' . $e->getMessage());
         }

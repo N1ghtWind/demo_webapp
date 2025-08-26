@@ -21,9 +21,11 @@ trait FormatsMeta
         if ($models instanceof LengthAwarePaginator) {
             return [
                 'current_page' => $models->currentPage(),
-                'total_pages' => $models->lastPage(),
-                'total_items' => $models->total(),
-                'items_per_page' => $models->perPage(),
+                'per_page' => $models->perPage(),
+                'total' => $models->total(),
+                'last_page' => $models->lastPage(),
+                'from' => $models->firstItem(),
+                'to' => $models->lastItem(),
             ];
         }
 
