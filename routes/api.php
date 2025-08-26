@@ -8,6 +8,11 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserRegistrationController;
 
+// Health check endpoint for CI/CD
+Route::get('/health', function () {
+    return response()->json(['status' => 'ok', 'timestamp' => now()]);
+});
+
 Route::post('/registration', [UserRegistrationController::class, 'registration']);
 Route::post('/activation', [UserRegistrationController::class, 'activation'])->name('activation');
 
