@@ -59,6 +59,16 @@ class AuthController extends Controller
         }
     }
 
+  /**
+   * @OA\Post(
+   *     path="/api/auth/refresh-token",
+   *     summary="Refresh JWT token",
+   *     tags={"Authentication"},
+   *     security={{"bearerAuth":{}}},
+   *     @OA\Response(response=200, description="Token refreshed successfully"),
+   *     @OA\Response(response=401, description="Unauthorized")
+   * )
+   */
     public function refreshToken(): JsonResponse
     {
         try {

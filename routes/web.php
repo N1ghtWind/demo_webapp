@@ -10,4 +10,4 @@ Route::get(
     function () {
         return view('app');
     }
-)->where('any', '^(?!api\/)[\/\w\.\,-]*');
+)->where('any', '^(?!api\/|docs\/)[\/\w\.\,-]*');
