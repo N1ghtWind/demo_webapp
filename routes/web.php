@@ -8,6 +8,6 @@ Route::get('/images/{path}', [MediaController::class, 'publicImage'])->where('pa
 Route::get(
     '/{any?}',
     function () {
-        return view('app');
+        return response()->json(['message' => 'Welcome to the API']);
     }
 )->where('any', '^(?!api\/|docs\/)[\/\w\.\,-]*');
