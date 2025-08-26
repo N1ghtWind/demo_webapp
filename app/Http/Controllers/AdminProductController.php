@@ -35,7 +35,7 @@ class AdminProductController extends Controller
             $product = $this->productService->store($validated);
             return $this->successResponse(new ProductResource($product), 201);
         } catch (Exception $e) {
-            return $this->errorResponse($e);
+            return $this->errorResponse($e, 500);
         }
     }
 
@@ -48,7 +48,7 @@ class AdminProductController extends Controller
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse($e, 404);
         } catch (Exception $e) {
-            return $this->errorResponse($e, 400);
+            return $this->errorResponse($e, 500);
         }
     }
 
@@ -65,11 +65,12 @@ class AdminProductController extends Controller
     public function bulkDestroy(Request $request): JsonResponse
     {
         try {
-            $ids = explode(',', $request->input('ids'));
+            $idsInput = $request->input('ids');
+            $ids = is_array($idsInput) ? $idsInput : explode(',', $idsInput);
             $this->productService->bulkDestroy($ids);
             return $this->successResponse(['message' => 'Products deleted successfully']);
         } catch (Exception $e) {
-            return $this->errorResponse($e, 404);
+            return $this->errorResponse($e, 500);
         }
     }
 

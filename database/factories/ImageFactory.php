@@ -15,7 +15,8 @@ class ImageFactory extends Factory
     public function definition()
     {
         return [
-            'url' => $this->faker->imageUrl(),
+            'path' => $this->faker->imageUrl(),
+            'type' => Image::TYPE_PUBLIC
         ];
     }
 }

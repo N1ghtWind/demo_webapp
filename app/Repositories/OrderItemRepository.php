@@ -13,13 +13,13 @@ class OrderItemRepository implements OrderItemRepositoryInterface
     /** @return EloquentCollection<int, OrderItem> */
     public function index(int $id, array $data): EloquentCollection
     {
-        return OrderItem::get();
+        return OrderItem::where('order_id', $id)->get();
     }
 
     public function show(int $orderId, int $id): OrderItem
     {
         try {
-            return OrderItem::findOrFail($id);
+            return OrderItem::where('order_id', $orderId)->findOrFail($id);
         } catch (ModelNotFoundException $e) {
             throw new ModelNotFoundException('OrderItem not found: ' . $e->getMessage());
         }
@@ -37,11 +37,11 @@ class OrderItemRepository implements OrderItemRepositoryInterface
     public function update(int $orderId, int $id, array $data): OrderItem
     {
         try {
-            $item = OrderItem::findOrFail($id);
+            $item = OrderItem::where('order_id', $orderId)->findOrFail($id);
             $item->update($data);
-            return $item;
+            return $item->fresh(); // Return fresh instance to get updated data
         } catch (ModelNotFoundException $e) {
-            throw new Exception('OrderItem not found: ' . $e->getMessage());
+            throw new ModelNotFoundException('OrderItem not found: ' . $e->getMessage());
         } catch (Exception $e) {
             throw new Exception('Failed to update OrderItem: ' . $e->getMessage());
         }
@@ -50,10 +50,10 @@ class OrderItemRepository implements OrderItemRepositoryInterface
     public function destroy(int $orderId, int $id): bool|null
     {
         try {
-            $item = OrderItem::findOrFail($id);
+            $item = OrderItem::where('order_id', $orderId)->findOrFail($id);
             return $item->delete();
         } catch (ModelNotFoundException $e) {
-            throw new Exception('OrderItem not found: ' . $e->getMessage());
+            throw new ModelNotFoundException('OrderItem not found: ' . $e->getMessage());
         } catch (Exception $e) {
             throw new Exception('Failed to delete OrderItem: ' . $e->getMessage());
         }

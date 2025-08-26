@@ -37,4 +37,4 @@ Route::apiResource('user', UserController::class);
 
 
 // Admin routes
-require_once __DIR__ . '/admin.php';
+require __DIR__.'/admin.php';

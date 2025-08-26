@@ -44,10 +44,11 @@ class OrderItemController extends Controller
     {
         try {
             $validated = $request->validated();
+            $validated['order_id'] = $order->id; // Add order_id from route
             $item = $this->orderItemService->store($order->id, $validated);
             return $this->successResponse(new OrderItemResource($item), 201);
         } catch (Exception $e) {
-            return $this->errorResponse($e);
+            return $this->errorResponse($e, 500);
         }
     }
 
@@ -55,12 +56,13 @@ class OrderItemController extends Controller
     {
         try {
             $validated = $request->validated();
+            $validated['order_id'] = $order->id; // Add order_id from route
             $item = $this->orderItemService->update($order->id, $validated, $id);
             return $this->successResponse(new OrderItemResource($item));
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse($e, 404);
         } catch (Exception $e) {
-            return $this->errorResponse($e);
+            return $this->errorResponse($e, 500);
         }
     }
 
@@ -71,6 +73,8 @@ class OrderItemController extends Controller
             return $this->successResponse(['message' => 'Order Item deleted successfully']);
         } catch (ModelNotFoundException $e) {
             return $this->errorResponse($e, 404);
+        } catch (Exception $e) {
+            return $this->errorResponse($e, 500);
         }
     }
 }

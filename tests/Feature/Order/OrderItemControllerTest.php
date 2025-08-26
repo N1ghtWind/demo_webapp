@@ -357,8 +357,8 @@ class OrderItemControllerTest extends TestCase
                 ],
             ]);
 
-        // Verify order item was deleted from database
-        $this->assertDatabaseMissing('order_items', [
+        // Verify order item was soft deleted from database
+        $this->assertSoftDeleted('order_items', [
             'id' => $this->orderItem->id,
         ]);
     }
@@ -452,10 +452,13 @@ class OrderItemControllerTest extends TestCase
             'price' => 999.99,
         ];
 
+        $expectedData = $orderItemData;
+        $expectedData['order_id'] = $this->order->id;
+        
         $mockService = $this->mock(OrderItemService::class);
         $mockService->shouldReceive('store')
             ->once()
-            ->with($this->order->id, $orderItemData)
+            ->with($this->order->id, $expectedData)
             ->andReturn($this->orderItem);
 
         // Act

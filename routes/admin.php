@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AdminProductController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware('check.admin.jwt')->group(function () {
     Route::get('/user/get-authenticated-user', [UserController::class, 'getAuthenticatedUser']);
