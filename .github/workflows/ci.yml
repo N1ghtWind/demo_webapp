@@ -231,6 +231,7 @@ jobs:
       - name: Wait for services
         run: |
           sleep 30
+          docker compose exec -T php git config --global --add safe.directory /var/www/html
           docker compose exec -T php composer install --no-progress --prefer-dist --optimize-autoloader
           docker compose exec -T php php artisan key:generate --ansi
           docker compose exec -T php php artisan migrate --force
@@ -242,7 +243,14 @@ jobs:
 
       - name: Check API health
         run: |
-          curl -f http://localhost:8080/api/health || exit 1
+          echo "Waiting for services to be ready..."
+          sleep 10
+          echo "Checking Docker container status:"
+          docker compose ps
+          echo "Checking application logs:"
+          docker compose logs php --tail=50
+          echo "Testing health endpoint:"
+          curl -v http://localhost:8080/api/health || exit 1
 
       - name: Cleanup
         if: always()
