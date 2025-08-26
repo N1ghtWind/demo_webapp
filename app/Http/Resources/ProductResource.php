@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use App\Models\Image;
-use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Product;
@@ -21,7 +20,6 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
 
-        $imageServiceForFirstImage = app(ImageService::class);
 
         return [
             'id' => $this->resource->id,
@@ -35,33 +33,17 @@ class ProductResource extends JsonResource
             /** @phpstan-ignore-next-line */
             'images' => $this->resource->images->map(function ($image): array {
                 /** @var Image $image */
-                $imageService = app(ImageService::class)
-                    ->setPath($image->path)
-                    ->setType((string) $image->type);
-
                 return [
                     'id' => $image->id,
-                    'presets' => $this->getImagePresets($image, $imageService),
+                    'presets' => $image->presets,
                     'first' => $image->pivot?->first ?? false,
                 ];
             }),
             'firstImage' => $this->resource->images->firstWhere('pivot.first', true) ? [
-                'presets' => $this->getImagePresets($this->resource->images->firstWhere('pivot.first', true), $imageServiceForFirstImage),
+                'presets' => $this->resource->images->firstWhere('pivot.first', true)->presets,
                 'first' => 1,
             ] : null,
         ];
     }
 
-    private function getImagePresets(Image $image, ImageService $imageService): array
-    {
-        $imageService->setPath($image->path)
-            ->setType((string) $image->type);
-
-        return [
-            'four_small' => $imageService->setPreset('four_small')->build(),
-            'actual_small' => $imageService->setPreset('actual_small')->build(),
-            'small' => $imageService->setPreset('small')->build(),
-            'big' => $imageService->setPreset('big')->build(),
-        ];
-    }
 }

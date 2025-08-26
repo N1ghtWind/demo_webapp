@@ -4,23 +4,24 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use App\Repositories\Interfaces\MediaRepositoryInterface;
+use App\Services\MediaService;
 
 class MediaController
 {
-    private MediaRepositoryInterface $mediaRepository;
-    public function __construct(MediaRepositoryInterface $mediaRepository)
+    private MediaService $mediaService;
+    
+    public function __construct(MediaService $mediaService)
     {
-        $this->mediaRepository = $mediaRepository;
+        $this->mediaService = $mediaService;
     }
 
     public function publicImage(Request $request, string $path): StreamedResponse
     {
-        return $this->mediaRepository->getImage($path, $request->except('s'));
+        return $this->mediaService->getImage($path, $request->except('s'));
     }
 
     public function image(Request $request, string $path): StreamedResponse
     {
-        return $this->mediaRepository->getImage($path, $request->input());
+        return $this->mediaService->getImage($path, $request->input());
     }
 }

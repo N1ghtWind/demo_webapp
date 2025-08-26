@@ -21,7 +21,6 @@ use App\Repositories\Interfaces\CategoryRepositoryInterface;
 use App\Repositories\CategoryRepository;
 use App\Repositories\Interfaces\UserAuthenticationInterface;
 use App\Repositories\AuthRepository;
-use Illuminate\Support\Facades\Route;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -46,12 +45,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Add missing scramble.docs.index route as alias to scramble.docs.ui
-        if (class_exists(\Dedoc\Scramble\Http\Controllers\DocsController::class)) {
-            Route::get('docs/api', function () {
-                /** @phpstan-ignore-next-line */
-                return app(\Dedoc\Scramble\Http\Controllers\DocsController::class)->ui();
-            })->name('scramble.docs.index')->middleware(['web', \Dedoc\Scramble\Http\Middleware\RestrictedDocsAccess::class]);
-        }
+        //
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Services\ImageService;
 
 /**
  * @property \Illuminate\Database\Eloquent\Relations\Pivot|null $pivot
@@ -31,6 +32,25 @@ class Image extends Model
             self::TYPE_S3 => self::TYPE_S3_TEXT,
             default => self::TYPE_UNKNOWN_TEXT,
         };
+    }
+
+    /**
+     * Get image presets for this image
+     * 
+     * @return array<string, string>
+     */
+    public function getPresetsAttribute(): array
+    {
+        $imageService = app(ImageService::class)
+            ->setPath($this->path)
+            ->setType((string) $this->type);
+
+        return [
+            'four_small' => $imageService->setPreset('four_small')->build(),
+            'actual_small' => $imageService->setPreset('actual_small')->build(),
+            'small' => $imageService->setPreset('small')->build(),
+            'big' => $imageService->setPreset('big')->build(),
+        ];
     }
 
     /**

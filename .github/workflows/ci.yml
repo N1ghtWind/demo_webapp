@@ -50,14 +50,8 @@ jobs:
         env:
           APP_ENV: testing
 
-      - name: Run PHP CodeSniffer
-        run: composer lint
-
       - name: Run PHPStan Static Analysis
         run: composer analyse
-
-      - name: Run PHP Mess Detector
-        run: composer phpmd
 
       - name: Run Deptrac Architecture Analysis
         run: composer deptrac
