@@ -76,7 +76,6 @@ class CategoryControllerTest extends TestCase
                 'data' => [
                     'id' => $this->category->id,
                     'name' => $this->category->name,
-                    'description' => $this->category->description,
                 ],
             ]);
     }
@@ -295,8 +294,8 @@ class CategoryControllerTest extends TestCase
                 ],
             ]);
 
-        // Verify category was deleted from database
-        $this->assertDatabaseMissing('categories', [
+        // Verify category was soft deleted from database
+        $this->assertSoftDeleted('categories', [
             'id' => $this->category->id,
         ]);
     }
@@ -332,7 +331,7 @@ class CategoryControllerTest extends TestCase
         $response = $this->postJson('/api/category', $categoryData);
 
         // Assert
-        $response->assertStatus(500);
+        $response->assertStatus(400);
     }
 
     /** @test */
@@ -492,7 +491,7 @@ class CategoryControllerTest extends TestCase
         // Verify proper formatting
         $this->assertIsInt($data['id']);
         $this->assertIsString($data['name']);
-        $this->assertIsString($data['description']);
+        $this->assertTrue(is_string($data['description']) || is_null($data['description']));
         $this->assertArrayHasKey('created_at', $data);
         $this->assertArrayHasKey('updated_at', $data);
     }

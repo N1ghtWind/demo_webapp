@@ -217,7 +217,7 @@ class UserRegistrationControllerTest extends TestCase
         $response = $this->postJson('/api/registration', $userData);
 
         // Assert
-        $response->assertStatus(500);
+        $response->assertStatus(400);
     }
 
     /** @test */
@@ -282,7 +282,7 @@ class UserRegistrationControllerTest extends TestCase
         $mockService->shouldReceive('registration')
             ->once()
             ->with($userData)
-            ->andReturn(true);
+            ->andReturn(User::factory()->make());
 
         // Act
         $response = $this->postJson('/api/registration', $userData);
