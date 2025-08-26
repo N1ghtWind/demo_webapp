@@ -226,17 +226,17 @@ jobs:
         run: |
           cp .env.example .env
           sed -i 's/DB_HOST=mysql82/DB_HOST=mysql82/' .env
-          docker-compose up -d --build
+          docker compose up -d --build
 
       - name: Wait for services
         run: |
           sleep 30
-          docker-compose exec -T php php artisan migrate --force
-          docker-compose exec -T php php artisan db:seed --force
+          docker compose exec -T php php artisan migrate --force
+          docker compose exec -T php php artisan db:seed --force
 
       - name: Run integration tests
         run: |
-          docker-compose exec -T php ./vendor/bin/phpunit --testsuite=Feature
+          docker compose exec -T php ./vendor/bin/phpunit --testsuite=Feature
 
       - name: Check API health
         run: |
@@ -244,4 +244,4 @@ jobs:
 
       - name: Cleanup
         if: always()
-        run: docker-compose down -v
+        run: docker compose down -v
