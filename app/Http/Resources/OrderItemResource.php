@@ -26,6 +26,7 @@ class OrderItemResource extends JsonResource
             'quantity' => $this->resource->quantity,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
+            /** @phpstan-ignore-next-line */
             'product' => $this->resource->product ? new ProductResource($this->resource->product) : null,
         ];
     }

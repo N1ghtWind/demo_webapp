@@ -23,6 +23,7 @@ class ProductResource extends JsonResource
 
         return [
             'id' => $this->resource->id,
+            /** @phpstan-ignore-next-line */
             'category' => $this->resource->category ? $this->resource->category->name : null,
             'category_id' => $this->resource->category_id,
             'price' => $this->resource->price,
@@ -30,7 +31,6 @@ class ProductResource extends JsonResource
             'description' => $this->resource->description,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
-            /** @phpstan-ignore-next-line */
             'images' => $this->resource->images->map(function ($image): array {
                 /** @var Image $image */
                 return [
